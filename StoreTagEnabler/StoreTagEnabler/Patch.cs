@@ -15,13 +15,32 @@ using UnityEngine;
 
 namespace StoreTagEnabler {
 
-    [HarmonyPatch(typeof(SGCaptainsQuartersReputationScreen), "RefreshWidgets")]
-    public static class SGCaptainsQuartersReputationScreen_RefreshWidgets {
+    [HarmonyPatch(typeof(SimGameState), "MeetsTagRequirements")]
+    public static class SimGameState_MeetsTagRequirements {
 
-        static void Prefix(ref SGCaptainsQuartersReputationScreen __instance) {
+        static void Postfix(SimGameState __instance, ref bool __result, TagSet reqTags, TagSet exTags, TagSet curTags, SimGameReport.ReportEntry log = null) {
             try {
-                SimGameState simState = (SimGameState)ReflectionHelper.GetPrivateField(__instance, "simState");
-                simState.displayedFactions = simState.displayedFactions.OrderByDescending(o => simState.GetRawReputation(o)).ToList();
+                if (!__result && !curTags.ContainsAny(exTags, true)) {
+                    foreach(string item in reqTags) {
+                        if (!curTags.Contains(item)) {
+                            if (item.StartsWith("time")) {
+                                string[] times = item.Split('_');
+                                if(!(__instance.DaysPassed >= int.Parse(times[1]))) {
+                                    return;
+                                } 
+                            }
+                            else if (item.StartsWith("rep")) {
+                                string[] reps = item.Split('_');
+                                if (!(__instance.GetRawReputation(Helper.getfaction(reps[1])) >= int.Parse(reps[2]))) {
+                                    return;
+                                } 
+                            } else {
+                                return;
+                            } 
+                        }
+                    }
+                    __result = true;
+                }
             }
             catch (Exception e) {
                 Logger.LogError(e);
