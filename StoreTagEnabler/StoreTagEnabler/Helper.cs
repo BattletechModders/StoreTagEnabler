@@ -44,30 +44,19 @@ namespace StoreTagEnabler {
 
         public static bool meetsNewReqs(StarSystem instance, TagSet reqTags, TagSet exTags, TagSet curTags) {
             try {
-                Logger.LogLine("Tags question?");
                 if (!curTags.ContainsAny(exTags, true)) {
-                    Logger.LogLine("start aditional Tags");
                     foreach (string item in reqTags) {
                         if (!curTags.Contains(item)) {
-                            Logger.LogLine("Reg not in starsystem");
                             if (item.StartsWith("time")) {
-                                Logger.LogLine("Starts with time");
                                 string[] times = item.Split('_');
-                                Logger.LogLine("time: " + times[1] + "days");
                                 if (!(instance.Sim.DaysPassed >= int.Parse(times[1]))) {
-                                    Logger.LogLine("Time not high enough");
                                     return false;
                                 }
                             }
                             else if (item.StartsWith("rep")) {
-                                Logger.LogLine("Starts with rep");
                                 string[] reps = item.Split('_');
-                                Logger.LogLine("faction: " + reps[1]);
-                                Logger.LogLine("rep needed: " + reps[2]);
                                 int test = instance.Sim.GetRawReputation(Helper.getfaction(reps[1]));
-                                Logger.LogLine("RAW gotten");
                                 if (!(test >= int.Parse(reps[2]))) {
-                                    Logger.LogLine("Rep not high enough");
                                     return false;
                                 }
                             }
