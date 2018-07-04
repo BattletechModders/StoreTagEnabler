@@ -37,6 +37,8 @@ namespace StoreTagEnabler {
                     return Faction.Steiner;
                 case "taurian":
                     return Faction.TaurianConcordat;
+                case "mrb":
+                    return Faction.MercenaryReviewBoard;
                 default:
                     return Faction.NoFaction;
             }
