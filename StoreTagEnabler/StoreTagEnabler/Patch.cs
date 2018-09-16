@@ -10,7 +10,6 @@ namespace StoreTagEnabler {
     public static class StarSystem_InitializeShop {
         static bool Prefix(StarSystem __instance) {
             try {
-
                 List<ShopDef> list = new List<ShopDef>();
                 foreach (string id in __instance.Sim.DataManager.Shops.Keys) {
                     ShopDef shopDef = __instance.Sim.DataManager.Shops.Get(id);
@@ -22,7 +21,6 @@ namespace StoreTagEnabler {
                     }
                 }
                 ReflectionHelper.InvokePrivateMethode(__instance, "set_Shop", new object[] { new Shop(__instance, list) });
-
                 return false;
             }
             catch (Exception e) {
